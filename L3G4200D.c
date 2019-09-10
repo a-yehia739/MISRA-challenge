@@ -9,6 +9,7 @@
 #include "L3G4200D_Cfg.h"
 #include "L3G4200D_Lcfg.h"
 #include "SPI.h"
+#include "DIO.h"
 /*****************************************************************************************************/
                                          /* Local Symbols */
 /*****************************************************************************************************/
@@ -151,6 +152,19 @@ static void vidInitSelectiveAxisMovement(void);
 /*****************************************************************************************************/
                                       /* Global Services */
 /*****************************************************************************************************/
+void GYHD_INIT_SLAVE_SELECT(void)
+{
+    DIO_InitPortDirection(PB,1<<4,1<<4);
+    DIO_WritePort(PB,1<<4,1<<4);
+}
+void GYHD_ACTIVATE_SLAVE_SELECT(void)
+{
+    DIO_WritePort(PB,~(1<<4),1<<4);
+}
+void GYHD_DEACTIVATE_SLAVE_SELECT(void)
+{
+    DIO_WritePort(PB,(1<<4),(1<<4));
+}
 u8 GYHD_Init(void)
 {
 	u8 RetVal;
