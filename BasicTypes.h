@@ -8,13 +8,6 @@
 
 #ifndef BASICTYPES_H_
 #define BASICTYPES_H_
-
-#define F_CPU 8000000ul
-typedef unsigned char u8;
-typedef unsigned short int u16;
-typedef unsigned long int u32;
-
-
-
-
+    #include "Basic_Types.h"
+    #define F_CPU 8000000ul
 #endif /* BASICTYPES_H_ */

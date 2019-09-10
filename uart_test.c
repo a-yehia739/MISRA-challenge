@@ -21,6 +21,10 @@ GPT_Timer30msInit(&Cyclic30ms);
     
 							
 	PWM_Init();
+/*************************************************************************
+ * violation of MISRA rules : 8.1 8.6
+ * because the "sei" function and its file are missing
+ *************************************************************************/
 	sei();
 	PWM_SetSpeed(25u);
 
@@ -29,7 +33,10 @@ GPT_Timer30msInit(&Cyclic30ms);
 	{
 		Count2 = (Count2 +1u) %20u;
 		BLMGR_SetBattLevel((u8)(Count2 / 4u));
-		
+/*************************************************************************
+ * violation of MISRA rules : 8.1 8.6
+ * because the "_delay_ms" function and its file are missing
+ *************************************************************************/
 		_delay_ms(100u);
 		Count ++;
 		if(start == 0u)

@@ -16,19 +16,13 @@
 extern void GYHD_INIT_SLAVE_SELECT(void);
 extern void GYHD_ACTIVATE_SLAVE_SELECT(void);
 extern void GYHD_DEACTIVATE_SLAVE_SELECT(void);
+extern void u8START_TIME_OUT_MS(u8 DELAY_MS,u8 *FLAG_PTR);
 
 /*Timeout Management Configuration*/
 #define u8USE_DELAY (0x00u)
 #define u8USE_TIMER (0x01u)
 
 #define u8TIMEOUT_FUNCTION (u8USE_DELAY)
-
-#if(u8TIMEOUT_FUNCTION == u8USE_DELAY)
-#define u8START_TIME_OUT_MS(DELAY_MS,FLAG_PTR) _delay_ms(DELAY_MS);\
-                                              *(FLAG_PTR) = 0x01
-#else
-#define u8START_TIME_OUT_MS(DELAY_MS,FLAG_PTR)
-#endif
 
 /*Self Axis Movement Detection Config*/
 #define u8SELF_AXIS_MOV  (ON)

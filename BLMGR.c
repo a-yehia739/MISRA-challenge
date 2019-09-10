@@ -141,11 +141,11 @@ static u8 CalculateCheksum(const u8 BufferPtr[], u16 BufferLength);
 static void BuzzerSound(void);
 static u8 CheckCrc(void);
 static void PowerBluetoothOn(void);
-static void PowerBluetoothOff(void);
+/*static void PowerBluetoothOff(void);*/
 static void BuzzerInit(void);
 static void PowerBlueToothInit(void);
 static void BlueToothKeyInit(void);
-static void InserBreakPoint(void);
+/*static void InserBreakPoint(void);*/
 /*********************************************************************************/
 /*Static variables*/
 /*********************************************************************************/
@@ -169,8 +169,8 @@ static u32 BLMGR_CrcKey;
 static u8  BLMGR_CommState;
 static u8  BLMGR_CommTimeOutCounter;
 static u8  BLMGR_TxBattLevel;
-/*static u8  BLMGR_RxDirection;*/
 /*static u8  BLMGR_RxSpeedDegree;*/
+/*static u8  BLMGR_RxDirection;*/
 #if (COMM_CINFIG == SLAVE_COMM)
 static u8  BLMGR_TxDirection;
 static u8  BLMGR_TxSpeedDegree;
@@ -866,6 +866,10 @@ static void BuzzerSound(void)
 	for(LoopIndex = 0u; LoopIndex < 2u ; LoopIndex ++)
 	{
 		DIO_WritePort(BuzzerConfig.Portname,BUZEER_ON,BuzzerConfig.PortMask1);
+/*************************************************************************
+ * violation of MISRA rules : 8.1 8.6
+ * because the "_delay_ms" function and its file are missing
+ *************************************************************************/
 		_delay_ms(25u);
 		DIO_WritePort(BuzzerConfig.Portname,(u8)~BUZEER_ON,BuzzerConfig.PortMask1);
 		_delay_ms(25u);
@@ -1215,12 +1219,12 @@ static u8 CheckDataFrame(void)
 					{
 						/*Update received paramters*/
 						/*Update Frame sender*/
-						BLMGR_RxFrameSender = BLMGR_DataRxBuffer[FRAME_SENDER_IDX];
+						/*BLMGR_RxFrameSender = BLMGR_DataRxBuffer[FRAME_SENDER_IDX];*/
 						#if(COMM_CINFIG == MSTER_COMM)
 						/*Update Direction*/
-						BLMGR_RxDirection = BLMGR_DataRxBuffer[DIRECTION_IDX];
+						/*BLMGR_RxDirection = BLMGR_DataRxBuffer[DIRECTION_IDX];*/
 						/*Update Speed degree*/
-						BLMGR_RxSpeedDegree = BLMGR_DataRxBuffer[SPEED_DEGREE_IDX];
+						/*BLMGR_RxSpeedDegree = BLMGR_DataRxBuffer[SPEED_DEGREE_IDX];*/
 						#elif(COMM_CINFIG == SLAVE_COMM)
 						BLMGR_RxBattLevel = BLMGR_DataRxBuffer[BATT_LEVEL_IDX];
 						#else
@@ -1727,7 +1731,7 @@ static u8 CheckCrc(void)
     RxCrc <<= 8;
 	TempBuffer3[0x00u] = TX_OS_TYPE;
 	TempBuffer3[0x01u] = TX_DEV_TYPE;
-	MemCpy(&TempBuffer3[0x02u],BLMGR_TxDevicName,BLMGR_TxDeviceNameLength);
+	MemCpy(&TempBuffer3[0x02u],BLMGR_TxDevicName,(u16)BLMGR_TxDeviceNameLength);
 	SECR_GnerateCrc(TempBuffer3,(u16)BLMGR_TxDeviceNameLength + 2u, &GenCrc1,BLMGR_CrcKey);
 	if(GenCrc1 == RxCrc)
 	{
@@ -1789,10 +1793,12 @@ static void PowerBluetoothOn(void)
 	DIO_WritePort(BlueToothPwrConfig.Portname,BLOUETOOTH_ON,BlueToothPwrConfig.PortMask1);
 }
 /*********************************************************************************/
+/*
 static void PowerBluetoothOff(void)
 {
 	DIO_WritePort(BlueToothPwrConfig.Portname,!BLOUETOOTH_ON,BlueToothPwrConfig.PortMask1);
 }
+*/
 /*********************************************************************************/
 static void DisconnectStateMachine(void)
 {
@@ -1820,7 +1826,7 @@ static void BlueToothKeyInit(void)
 	DIO_InitPortDirection(BluetoothKeyConfig.Portname,0xffu,BluetoothKeyConfig.PortMask1);
 	DIO_WritePort(BluetoothKeyConfig.Portname,0xffu,BluetoothKeyConfig.PortMask1);
 }
-
+/*
 static void InserBreakPoint(void)
 {
 	DIO_WritePort(BuzzerConfig.Portname,0xffu,BuzzerConfig.PortMask1);
@@ -1829,3 +1835,4 @@ static void InserBreakPoint(void)
 
 	}
 }
+*/

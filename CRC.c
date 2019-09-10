@@ -8,7 +8,11 @@ void SECR_CrcPolynomialGenerate(u32* PolynomialPtr,u8 CrcLengthInBits)
 {
 	u32 DevisorValue;
 	DevisorValue = (u32)(GetPower(2u,(u32)CrcLengthInBits)) - 1u;
-	*PolynomialPtr = (rand() % DevisorValue) + (u32)0x10000 ;
+/*************************************************************************
+ * violation of MISRA rules : 8.1 8.6
+ * because the "rand" function and its file are missing
+ *************************************************************************/
+	*PolynomialPtr = ((u32)rand() % DevisorValue) + (u32)0x10000 ;
 }
 /***************************************************************************************/
 void SECR_GnerateCrc(const u8 PayloadPtr[],u16 PayloadLength, u16* CrcPtr, u32 CrcPoly)
