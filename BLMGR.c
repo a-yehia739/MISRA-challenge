@@ -164,13 +164,13 @@ static u8  BLMGR_TxDevicName[MAX_DEV_NAME_LENGTH];
 static u8  BLMGR_RxDeviceNameLength;
 static u8  BLMGR_TxDeviceNameLength;
 static u8  BLMGR_TxFrameReceiver;
-static u8  BLMGR_RxFrameSender;
+/*static u8  BLMGR_RxFrameSender;*/
 static u32 BLMGR_CrcKey;
 static u8  BLMGR_CommState;
 static u8  BLMGR_CommTimeOutCounter;
 static u8  BLMGR_TxBattLevel;
-static u8  BLMGR_RxDirection;
-static u8  BLMGR_RxSpeedDegree;
+/*static u8  BLMGR_RxDirection;*/
+/*static u8  BLMGR_RxSpeedDegree;*/
 #if (COMM_CINFIG == SLAVE_COMM)
 static u8  BLMGR_TxDirection;
 static u8  BLMGR_TxSpeedDegree;
@@ -184,7 +184,7 @@ static u8  BLMGR_HandshakeFailRepCount;
 static u8  BLMGR_CommFailReptCount;
 static u8  BLMGR_ExpectedReceivedFrame;
 static u8  BLMGR_DisconectionTimeOut;
-static u8 testflag = 0u;
+/*static u8 testflag = 0u;*/
 static u8 BLMGR_DevicePaired;
 /*********************************************************************************/
 /*Global Services*/
@@ -912,7 +912,7 @@ static void UpdateIdFrame(void)
 	/*Update Device Type*/
 	BLMGR_DataTxBuffer[DEV_TYPE_IDX] = TX_DEV_TYPE;
 	/*Update Device Name*/
-	MemCpy(&BLMGR_DataTxBuffer[DEV_NAME_IDX],BLMGR_TxDevicName,BLMGR_TxDeviceNameLength);
+	MemCpy(&BLMGR_DataTxBuffer[DEV_NAME_IDX],BLMGR_TxDevicName,(u16)BLMGR_TxDeviceNameLength);
 	/*update Default CRC*/
 	MemSet(&BLMGR_DataTxBuffer[FRAME_CRC_IDX],TX_CRC_DEFAULT,2u);
 	/*update Frame CheckSum*/
@@ -955,13 +955,13 @@ static u8 CheckIdFrame(void)
 							
 							/*Update received paramters*/
 							/*Update Frame sender*/
-							BLMGR_RxFrameSender = BLMGR_DataRxBuffer[FRAME_SENDER_IDX];
+							/*BLMGR_RxFrameSender = BLMGR_DataRxBuffer[FRAME_SENDER_IDX];*/
 							/*Update OS Type*/
 							BLMGR_RxOsType = BLMGR_DataRxBuffer[OS_TYPE_IDX];
 							/*Update Device Type*/
 							BLMGR_RxDeviceType = BLMGR_DataRxBuffer[DEV_TYPE_IDX];
 							/*Update Device Name*/
-							MemCpy(BLMGR_RxDevicName,&BLMGR_DataRxBuffer[DEV_NAME_IDX],BLMGR_RxDeviceNameLength);
+							MemCpy(BLMGR_RxDevicName,&BLMGR_DataRxBuffer[DEV_NAME_IDX],(u16)BLMGR_RxDeviceNameLength);
 							BLMGR_ErrorState = ERRH_NO_ERROR;
 							IsFrameValid2 = 1u;
 						}
@@ -1035,7 +1035,7 @@ static void UpdateValFrame(void)
 	/*Prepare Data*/
 	TempBuffer[0x00u] = BLMGR_RxOsType;
 	TempBuffer[0x01u] = BLMGR_RxDeviceType;
-	MemCpy(&TempBuffer[0x02u],BLMGR_RxDevicName,BLMGR_RxDeviceNameLength);
+	MemCpy(&TempBuffer[0x02u],BLMGR_RxDevicName,(u16)BLMGR_RxDeviceNameLength);
 	SECR_GnerateCrc(TempBuffer,BLMGR_RxDeviceNameLength + (u16)2, &Crc,BLMGR_CrcKey);
 	/*Update Crc*/
 	BLMGR_DataTxBuffer[FRAME_VAL_CRC_IDX] = (u8)Crc;

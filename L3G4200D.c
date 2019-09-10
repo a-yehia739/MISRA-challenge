@@ -13,6 +13,7 @@
 /*****************************************************************************************************/
                                          /* Local Symbols */
 /*****************************************************************************************************/
+#define ON 1
 /*Registers addresses*/
 #define WHO_AM_I_REG_ADD 0x0f
 #define CTRL_REG1_ADD 0x20
@@ -97,36 +98,36 @@
 #define L3G4200D_WRITE_INT1_DURATION(DATA)         L3G4200D_REG_WRITE(INT1_DURATION_ADD,DATA)
 /*****************************************************************************************************/
 /*Register Default Value*/
-#define L3G4200D_WHO_AM_I_DEFAULT 0xD3                                  
+#define L3G4200D_WHO_AM_I_DEFAULT (0xD3u)
 /*****************************************************************************************************/
 /*Operational Modes Management*/
-#define u8PWR_DN_MOD 0x00
-#define u8SLEEP_MOD  0x08
-#define u8NORMAL_MOD 0x0f
-#define u8MOD_CLR_MASK 0xf0
-#define u8TO_SLEEP_MODE_DELAY_MS 0x05
+#define u8PWR_DN_MOD (0x00u)
+#define u8SLEEP_MOD  (0x08u)
+#define u8NORMAL_MOD (0x0fu)
+#define u8MOD_CLR_MASK (0xf0u)
+#define u8TO_SLEEP_MODE_DELAY_MS (0x05u)
 /*****************************************************************************************************/
 /*CTRL_REG4 Initialization*/
-#define u8BLOCK_DATA_UPDATE 0x00
-#define	u8BIG_LITTLE_ENDIAN 0x00
-#define u8SELF_TEST_MODE    0x00
-#define u8SPI_MODE          0x00
+#define u8BLOCK_DATA_UPDATE (0x00u)
+#define	u8BIG_LITTLE_ENDIAN (0x00u)
+#define u8SELF_TEST_MODE    (0x00u)
+#define u8SPI_MODE          (0x00u)
 #define u8CTRL_REG4_INIT (u8BLOCK_DATA_UPDATE | u8BIG_LITTLE_ENDIAN | u8SELF_TEST_MODE | u8SPI_MODE)
 /*****************************************************************************************************/
 /*Reading Operation*/
-#define u8NEW_DATA_AVAILABEL_X_MASK 0x01
-#define u8NEW_DATA_AVAILABEL_Y_MASK 0x02
-#define u8NEW_DATA_AVAILABEL_Z_MASK 0x04
-#define u8DATA_OVER_WRITTEN_MASK    0x80
-#define u8AXIS_IS_ENABLED           0x00
-#define u8AXIS_IS_DISABLED          0x01
+#define u8NEW_DATA_AVAILABEL_X_MASK (0x01u)
+#define u8NEW_DATA_AVAILABEL_Y_MASK (0x02u)
+#define u8NEW_DATA_AVAILABEL_Z_MASK (0x04u)
+#define u8DATA_OVER_WRITTEN_MASK    (0x80u)
+#define u8AXIS_IS_ENABLED           (0x00u)
+#define u8AXIS_IS_DISABLED          (0x01u)
 /*****************************************************************************************************/
 /*Filters Configuration*/
-#define u8FILTERS_CLR_MASK 0xE0
+#define u8FILTERS_CLR_MASK (0xE0u)
 /*****************************************************************************************************/
 /*Self Axis Movement Config*/
 #if (u8SELF_AXIS_MOV == ON)
-#define u8INT1_ENABLE 0x80
+#define u8INT1_ENABLE (0x80u)
 #endif
 /*****************************************************************************************************/
                                         /*Static Variables*/
@@ -154,31 +155,31 @@ static void vidInitSelectiveAxisMovement(void);
 /*****************************************************************************************************/
 void GYHD_INIT_SLAVE_SELECT(void)
 {
-    DIO_InitPortDirection(PB,1<<4,1<<4);
-    DIO_WritePort(PB,1<<4,1<<4);
+    DIO_InitPortDirection(PB,(u8)(1u<<4u),(u8)(1u<<4u));
+    DIO_WritePort(PB,(u8)(1u<<4u),(u8)(1u<<4u));
 }
 void GYHD_ACTIVATE_SLAVE_SELECT(void)
 {
-    DIO_WritePort(PB,~(1<<4),1<<4);
+    DIO_WritePort(PB,~((u8)(1u<<4u)),(u8)(1u<<4u));
 }
 void GYHD_DEACTIVATE_SLAVE_SELECT(void)
 {
-    DIO_WritePort(PB,(1<<4),(1<<4));
+    DIO_WritePort(PB,(u8)(1u<<4u),(u8)(1u<<4u));
 }
 u8 GYHD_Init(void)
 {
 	u8 RetVal;
 	GYHD_INIT_SLAVE_SELECT();
 	SPI_vidInit();
-	GYHD_u8TimeOutFlag = 0;
-	GYHD_u8StartTimeoutFlag = 0;
+	GYHD_u8TimeOutFlag = 0u;
+	GYHD_u8StartTimeoutFlag = 0u;
 	/*To Do: Initialized Module Registers with the Specific values*/
 	/*Wait for Entering Power Down Mode*/
 	do 
 	{
-	  u8START_TIME_OUT_MS(250,&GYHD_u8TimeOutFlag);	
-	}while (GYHD_u8TimeOutFlag == 0);
-	GYHD_u8TimeOutFlag = 0;
+	    u8START_TIME_OUT_MS(250,&GYHD_u8TimeOutFlag);
+	}while (GYHD_u8TimeOutFlag == 0u);
+	GYHD_u8TimeOutFlag = 0u;
 	
 		/*Perform Sensor Self Test*/
 	RetVal = udtSelfTest();
@@ -204,7 +205,7 @@ u8 GYHD_Init(void)
 void GYHD_WakeUpModule(u8* u8WakeUpStatePtr)
 {
 	vidManageOperationModes(u8NORMAL_MOD);
-	if((GYHD_u8LastPowerMode == u8NORMAL_MOD) && (GYHD_u8StartTimeoutFlag == 0))
+	if((GYHD_u8LastPowerMode == u8NORMAL_MOD) && (GYHD_u8StartTimeoutFlag == 0u))
 	{
 		*u8WakeUpStatePtr = u8WAKEUP_DN;
 	}
@@ -224,17 +225,17 @@ u8 GYHD_ReadXDirection(u16* pu16Data,u8* pu8ReadingStatus)
 {
 	u8 RetVar = NOK;
 	u8 u8IsEnabled;
-	u8 u8AxisMask = u8NEW_DATA_AVAILABEL_X_MASK;
+	u8 u8AxisMask1 = u8NEW_DATA_AVAILABEL_X_MASK;
 	/*Check if Axis was enabled*/
-	u8IsEnabled = u8CheckAxisIsEnabled(u8AxisMask);
+	u8IsEnabled = u8CheckAxisIsEnabled(u8AxisMask1);
 	if(u8IsEnabled == u8AXIS_IS_ENABLED)
 	{
 		/*Check for Data Updated*/
-		vidCheckForNewData(pu8ReadingStatus,u8AxisMask);
+		vidCheckForNewData(pu8ReadingStatus,u8AxisMask1);
 		if(*pu8ReadingStatus == u8READING_OK)
 		{
 			/*Read Data*/
-			*pu16Data = u16ReadAxisData(u8AxisMask);
+			*pu16Data = u16ReadAxisData(u8AxisMask1);
 			RetVar = OK;
 		}
 		else
@@ -253,20 +254,20 @@ u8 GYHD_ReadXDirection(u16* pu16Data,u8* pu8ReadingStatus)
 /*****************************************************************************************************/
 u8 GYHD_ReadYDirection(u16* pu16Data,u8* pu8ReadingStatus)
 {
-	u8 RetVar = NOK;
-	u8 u8IsEnabled;
-	u8 u8AxisMask = u8NEW_DATA_AVAILABEL_Y_MASK;
+	u8 RetVar1 = NOK;
+	u8 u8IsEnabled1;
+	u8 u8AxisMask2 = u8NEW_DATA_AVAILABEL_Y_MASK;
 	/*Check if Axis was enabled*/
-	u8IsEnabled = u8CheckAxisIsEnabled(u8AxisMask);
-	if(u8IsEnabled == u8AXIS_IS_ENABLED)
+	u8IsEnabled1 = u8CheckAxisIsEnabled(u8AxisMask2);
+	if(u8IsEnabled1 == u8AXIS_IS_ENABLED)
 	{
 		/*Check for Data Updated*/
-		vidCheckForNewData(pu8ReadingStatus,u8AxisMask);
+		vidCheckForNewData(pu8ReadingStatus,u8AxisMask2);
 		if(*pu8ReadingStatus == u8READING_OK)
 		{
 			/*Read Data*/
-			*pu16Data = u16ReadAxisData(u8AxisMask);
-			RetVar = OK;
+			*pu16Data = u16ReadAxisData(u8AxisMask2);
+			RetVar1 = OK;
 		}
 		else
 		{
@@ -279,25 +280,25 @@ u8 GYHD_ReadYDirection(u16* pu16Data,u8* pu8ReadingStatus)
 		*pu8ReadingStatus = u8AXIS_DISABLED;
 	}
 	
-	return RetVar;
+	return RetVar1;
 }
 /*****************************************************************************************************/
 u8 GYHD_ReadZDirection(u16* pu16Data,u8* pu8ReadingStatus)
 {
-	u8 RetVar = NOK;
-	u8 u8IsEnabled;
-	u8 u8AxisMask = u8NEW_DATA_AVAILABEL_Z_MASK;
+	u8 RetVar2 = NOK;
+	u8 u8IsEnabled2;
+	u8 u8AxisMask3 = u8NEW_DATA_AVAILABEL_Z_MASK;
 	/*Check if Axis was enabled*/
-	u8IsEnabled = u8CheckAxisIsEnabled(u8AxisMask);
-	if(u8IsEnabled == u8AXIS_IS_ENABLED)
+	u8IsEnabled2 = u8CheckAxisIsEnabled(u8AxisMask3);
+	if(u8IsEnabled2 == u8AXIS_IS_ENABLED)
 	{
 		/*Check for Data Updated*/
-		vidCheckForNewData(pu8ReadingStatus,u8AxisMask);
+		vidCheckForNewData(pu8ReadingStatus,u8AxisMask3);
 		if(*pu8ReadingStatus == u8READING_OK)
 		{
 			/*Read Data*/
-			*pu16Data = u16ReadAxisData(u8AxisMask);
-			RetVar = OK;
+			*pu16Data = u16ReadAxisData(u8AxisMask3);
+			RetVar2 = OK;
 		}
 		else
 		{
@@ -310,7 +311,7 @@ u8 GYHD_ReadZDirection(u16* pu16Data,u8* pu8ReadingStatus)
 		*pu8ReadingStatus = u8AXIS_DISABLED;
 	}
 	
-	return RetVar;
+	return RetVar2;
 }
 /*****************************************************************************************************/
                               /*Private functions definitions*/
@@ -341,20 +342,20 @@ static void vidCheckForNewData(u8* pu8Status, u8 u8AxisMask)
 /*****************************************************************************************************/
 static u8 u8CheckAxisIsEnabled(u8 u8AxisMask)
 {
-	u8 u8IsEnabled;
+	u8 u8IsEnabled3;
 	u8 u8RegValue;
 	/*Read Control Register*/
 	L3G4200D_READ_CTRL_REG1(&u8RegValue);
 	/*Check for access Status*/
 	if((u8RegValue & u8AxisMask) == u8AxisMask)
 	{
-		u8IsEnabled = u8AXIS_IS_ENABLED;
+	    u8IsEnabled3 = u8AXIS_IS_ENABLED;
 	}
 	else
 	{
-		u8IsEnabled = u8AXIS_IS_DISABLED;
+	    u8IsEnabled3 = u8AXIS_IS_DISABLED;
 	}
-	return u8IsEnabled;
+	return u8IsEnabled3;
 }
 /*****************************************************************************************************/
 static u16 u16ReadAxisData(u8 AxisMask)

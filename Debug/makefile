@@ -139,7 +139,8 @@ BIN_OUTPUTS__QUOTED += \
 
 
 # All Target
-all: misra\ challenge.out
+all: $(OBJS) $(GEN_CMDS)
+	@$(MAKE) --no-print-directory -Onone "misra challenge.out"
 
 # Tool invocations
 misra\ challenge.out: $(OBJS) $(GEN_CMDS)
