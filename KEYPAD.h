@@ -10,8 +10,8 @@
 #define KEYPAD_H_
 
 
-void KPD_Init(void);
-void KPD_ReadVal(unsigned char* ValuePtr);
+extern void KPD_Init(void);
+extern void KPD_ReadVal(unsigned char* ValuePtr);
 
 
 #endif /* KEYPAD_H_ */
